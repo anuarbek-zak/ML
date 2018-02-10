@@ -1,0 +1,59 @@
+import pandas
+from numpy import corrcoef
+import operator
+
+data = pandas.read_csv('titanic.csv',index_col='PassengerId')
+
+def print_head():
+    print (data[:10])
+
+def func_1():
+    print ('func 1 |',data['Sex'].value_counts())
+
+def func_2():
+    arr = data.groupby('Survived').size()
+    print (arr)
+    print ('func 2 |',(arr[1]/arr.sum()) * 100)
+
+def func_3():
+    arr = data.groupby('Pclass').size()
+    print ('func 3 |',(arr[1]/arr.sum())*100)
+
+def func_4():
+    mean = data['Age'].mean()
+    median = data['Age'].median()
+    print ('func 4 |',mean,median)
+
+def func_6():
+    arr = data.groupby('Sex')['Name'].apply(list)
+    names = arr[0]
+    frequentMap = {}
+    for i in range(1,len(names)):
+        fullName = names[i]
+        firstName = names[i].split('. ')[-1].split(' ')[0]
+        if(fullName.find('(')!=-1):
+            firstName = fullName.split('(')[1].split(' ')[0]
+        if(firstName in frequentMap):
+            frequentMap[firstName]+=1
+        else:
+            frequentMap[firstName]=0
+    print ('func 6 |',max(frequentMap.items(), key=lambda k: k[1]))
+    sorted_names = sorted(frequentMap.items(), key=operator.itemgetter(1))
+    print ('func 6 |',sorted_names)
+
+def func_7():
+    cor = corrcoef(data['SibSp'],data['Parch'])
+    print ('func 7 |',cor)
+
+
+def print_keys():
+    print (data.keys())
+
+# print_keys()
+func_1()
+func_2()
+func_3()
+func_4()
+func_6()
+func_7()
+# print_head()
